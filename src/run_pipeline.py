@@ -41,24 +41,24 @@ QUANTILES  = [0.10, 0.50, 0.90]
 
 def main():
     t0 = time.time()
-    print("\n" + "╔" + "═" * 58 + "╗")
-    print("║  DEMAND FORECASTING PIPELINE WITH PREDICTION INTERVALS  ║")
-    print("╚" + "═" * 58 + "╝\n")
+    print("\n" + "=" * 60)
+    print("  DEMAND FORECASTING PIPELINE WITH PREDICTION INTERVALS")
+    print("=" * 60 + "\n")
 
-    # ── Step 1: Data ──────────────────────────────────────────────────
-    print("▶ Step 1/6  Generate synthetic dataset")
+    # Step 1: Data
+    print("Step 1/6  Generate synthetic dataset")
     data_path = Path("data/train.csv")
     if data_path.exists():
-        print(f"  [skip] {data_path} already exists – delete to regenerate")
+        print(f"  [skip] {data_path} already exists - delete to regenerate")
     else:
         generate_dataset(output_path=str(data_path))
 
-    # ── Step 2: Features ──────────────────────────────────────────────
-    print("\n▶ Step 2/6  Feature engineering")
+    # Step 2: Features
+    print("\nStep 2/6  Feature engineering")
     df = load_and_engineer(data_path)
 
-    # ── Step 3: Train ─────────────────────────────────────────────────
-    print("\n▶ Step 3/6  Train LightGBM quantile models")
+    # Step 3: Train
+    print("\nStep 3/6  Train LightGBM quantile models")
     train_df, val_df = temporal_split(df, SPLIT_DATE)
     models = train_quantile_models(train_df, val_df, quantiles=QUANTILES)
     save_models(models)
@@ -71,26 +71,26 @@ def main():
     out_path = Path("outputs/val_predictions.csv")
     val_df[["date", "store", "item", TARGET,
             "pred_q10", "pred_q50", "pred_q90"]].to_csv(out_path, index=False)
-    print(f"  Saved {len(val_df):,} predictions → {out_path}")
+    print(f"  Saved {len(val_df):,} predictions -> {out_path}")
 
-    # ── Step 4: Evaluate ──────────────────────────────────────────────
-    print("\n▶ Step 4/6  Evaluate accuracy & calibration")
+    # Step 4: Evaluate
+    print("\nStep 4/6  Evaluate accuracy & calibration")
     results, monthly_cov, overconf = evaluate(str(out_path))
     print_results(results)
     print("\n  Overconfidence by context:")
     print(overconf.to_string(index=False))
 
-    # ── Step 5: Inventory decision ────────────────────────────────────
-    print("\n▶ Step 5/6  Inventory decision analysis")
+    # Step 5: Inventory decision
+    print("\nStep 5/6  Inventory decision analysis")
     inv_df, inv_summary = run_inventory(str(out_path))
 
-    # ── Step 6: Visualize ─────────────────────────────────────────────
-    print("\n▶ Step 6/6  Generate plots")
+    # Step 6: Visualize
+    print("\nStep 6/6  Generate plots")
     generate_all_plots()
 
     elapsed = time.time() - t0
-    print(f"\n✓ Pipeline complete in {elapsed/60:.1f} min")
-    print("  Outputs → outputs/")
+    print(f"\n[DONE] Pipeline complete in {elapsed/60:.1f} min")
+    print("  Outputs -> outputs/")
 
 
 if __name__ == "__main__":

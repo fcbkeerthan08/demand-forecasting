@@ -205,16 +205,13 @@ def plot_pi_width_over_time(pred_df: pd.DataFrame):
     daily = (
         pred_df.groupby("date")
         .agg(
-            mean_sales = ("sales", "mean"),
-            mean_width = ("pred_q90", "mean"),   # width proxy
+            mean_sales=("sales",    "mean"),
+            mean_q10  =("pred_q10", "mean"),
+            mean_q90  =("pred_q90", "mean"),
         )
         .reset_index()
     )
-    # subtract q10 mean if available
-    if "pred_q10" in pred_df.columns:
-        q10_daily = pred_df.groupby("date")["pred_q10"].mean()
-        daily = daily.join(q10_daily, on="date")
-        daily["mean_width"] = daily["pred_q90"] - daily["pred_q10"]
+    daily["mean_width"] = daily["mean_q90"] - daily["mean_q10"]
 
     roll = daily.set_index("date").rolling("28D")
     daily["roll_sales"] = roll["mean_sales"].mean().values

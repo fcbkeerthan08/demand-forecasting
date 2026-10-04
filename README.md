@@ -175,33 +175,47 @@ jupyter lab notebooks/demand_forecasting_analysis.ipynb
 
 ## Key Results
 
-> Results below are indicative; exact values depend on random seed and hardware.
+Results from the 2017 validation set (182,500 store×item×day rows).
 
-### Point Accuracy (q50 forecast)
+### Point Accuracy (q50 / median forecast)
 | Metric | Value |
 |---|---|
-| MAE | ~4.8 units |
-| RMSE | ~7.2 units |
-| SMAPE | ~12.4 % |
+| MAE | **19.03 units** |
+| RMSE | **29.02 units** |
+| MAPE | 38.9 % |
+| SMAPE | 32.2 % |
 
-### Interval Calibration (80% PI)
-| Metric | Value | Target |
-|---|---|---|
-| Coverage | ~80.2 % | 80.0 % |
-| Mean PI width | ~14.1 units | — |
-| Winkler score | ~9.8 | lower = better |
+> High MAPE is expected: the dataset spans items with very low base sales where even small absolute errors create large percentage errors.
 
-### Inventory Decision
-| Policy | Annual cost | Stockout rate |
+### Interval Calibration (80% PI = q10 → q90)
+| Metric | Value | Target / Interpretation |
 |---|---|---|
-| Point forecast (q50) | $X | ~20 % |
-| Quantile policy (q90) | $X − 12 % | ~8 % |
+| **Coverage** | **79.4 %** | ✅ Target = 80 % — nearly perfect calibration |
+| Mean PI width | 59.5 units | Adaptive: wider on promo days, narrower on calm days |
+| Winkler score | 87.1 | Proper scoring rule (lower = better sharpness + accuracy) |
+| Pinball loss q10 | 3.66 | |
+| Pinball loss q50 | 9.52 | |
+| Pinball loss q90 | 5.05 | |
+
+### Inventory Decision (Newsvendor, c_over=\$0.15, c_under=\$1.20)
+| Policy | Total cost (2017) | Stockout rate |
+|---|---|---|
+| Point forecast (q50) | \$2,642,694 | 50.1 % |
+| **Quantile policy (q90)** | **\$1,328,283** | **10.4 %** |
+| **Net saving** | **\$1,314,411 (49.7 %)** | |
+
+Safety stock = q90 − q50 = **~34 units/day** on average.
 
 ### Overconfidence Findings
-Intervals are **narrowest relative to error** during:
-- 🎁 **Christmas week** — demand spikes are underestimated
-- 🛍️ **Black Friday** — short but extreme spikes exceed PI upper bound
-- ☀️ **Summer sale** — more predictable; model handles well
+| Context | Miss rate | vs. Nominal 20% |
+|---|---|---|
+| Black Friday | 22.5 % | ⚠️ Overconfident |
+| Christmas week | 21.0 % | ⚠️ Slightly overconfident |
+| Weekend | 20.8 % | ⚠️ Marginal |
+| Normal days | 20.5 % | ✅ Well-calibrated |
+| Summer sale | 20.3 % | ✅ Well-calibrated |
+
+The model is marginally overconfident during **promotional demand spikes** (Black Friday, Christmas). Production fix: add explicit promo-lift multiplier features or ensemble with a separate promotion model.
 
 ---
 
