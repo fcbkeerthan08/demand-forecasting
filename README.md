@@ -113,63 +113,67 @@ demand-forecasting/
 
 ---
 
-## Setup & Installation
+## 🚀 Quick Start Guide (How to Run)
 
-### Prerequisites
-- Python 3.8+
-- pip
+Follow these step-by-step instructions to set up the project and run the complete forecasting pipeline on your local machine.
 
-### Install dependencies
+### Step 1: Prerequisites
+Ensure you have the following installed on your computer:
+* **Python 3.8+**: [Download here](https://www.python.org/downloads/) (Make sure to check "Add Python to PATH" during installation)
+* **Git**: [Download here](https://git-scm.com/)
 
+### Step 2: Clone the Repository
+Open your terminal (Command Prompt, PowerShell, or Terminal) and run:
 ```bash
 git clone https://github.com/<your-username>/demand-forecasting.git
 cd demand-forecasting
+```
+
+### Step 3: Create a Virtual Environment (Highly Recommended)
+Creating a virtual environment keeps this project's dependencies separate from your main system.
+* **On Windows:**
+  ```bash
+  python -m venv venv
+  venv\Scripts\activate
+  ```
+* **On macOS/Linux:**
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate
+  ```
+*(You will know it worked when you see `(venv)` at the beginning of your terminal prompt).*
+
+### Step 4: Install Dependencies
+With your virtual environment activated, install all the required Python packages (LightGBM, Pandas, Scikit-learn, etc.):
+```bash
 pip install -r requirements.txt
 ```
 
----
-
-## Reproducing Results
-
-### Option A — Full pipeline (recommended)
+### Step 5: Run the Full Pipeline
+You can run the entire end-to-end pipeline with a single command! This script automatically generates the synthetic data, engineers the features, trains all 3 quantile models, evaluates them, and creates the visual plots.
 
 ```bash
-cd demand-forecasting
 python src/run_pipeline.py
 ```
+> ⏳ **Note:** The pipeline processes over 900,000 rows of data. It usually takes between **5 to 15 minutes** to finish depending on your computer's speed. Grab a coffee!
 
-This runs all 6 steps (~15–25 min on a laptop CPU):
-1. ✅ Generates synthetic data (`data/train.csv`)
-2. ✅ Engineers features
-3. ✅ Trains 3 quantile models
-4. ✅ Evaluates accuracy & calibration
-5. ✅ Runs inventory decision analysis
-6. ✅ Generates all plots to `outputs/figures/`
+### Step 6: View the Outputs
+Once the pipeline says `[DONE]`, all results will be saved in your folder automatically. Navigate to the `outputs/` directory to see what was created:
+* 🖼️ **`outputs/figures/`**: Open the `.png` files to see beautifully generated charts (Forecast Fan Chart, Cost Tradeoffs, Feature Importance, etc.)
+* 🧠 **`outputs/models/`**: Contains the saved LightGBM models (`.pkl` files).
+* 📊 **`outputs/val_predictions.csv`**: A CSV file containing all 182,500 predictions compared against actual sales.
 
-### Option B — Step by step
+---
 
-```bash
-# 1. Generate data
-python -c "from src.data_generator import generate_dataset; generate_dataset()"
+## 🔬 Alternative: Explore the Jupyter Notebook
 
-# 2. Train
-python src/train.py
+If you prefer an interactive, narrative walkthrough of the code instead of running a single script, we have a Jupyter Notebook prepared for you.
 
-# 3. Evaluate
-python src/evaluate.py
-
-# 4. Inventory analysis
-python src/inventory_decision.py
-
-# 5. Plots
-python src/visualize.py
-```
-
-### Option C — Jupyter notebook
-
+With your virtual environment still activated, run:
 ```bash
 jupyter lab notebooks/demand_forecasting_analysis.ipynb
 ```
+This will open the code in your web browser where you can run it cell by cell and see the charts appear inline.
 
 ---
 
