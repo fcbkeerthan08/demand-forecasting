@@ -1,4 +1,4 @@
-# 📦 Demand Forecasting with Prediction Intervals
+#  Demand Forecasting with Prediction Intervals
 
 > **Probabilistic retail demand forecasting using LightGBM Quantile Regression.**  
 > Point forecasts hide risk. This project produces calibrated 80% prediction intervals
@@ -113,7 +113,7 @@ demand-forecasting/
 
 ---
 
-## 🚀 Quick Start Guide (How to Run)
+##  Quick Start Guide (How to Run)
 
 Follow these step-by-step instructions to set up the project and run the complete forecasting pipeline on your local machine.
 
@@ -155,17 +155,17 @@ You can run the entire end-to-end pipeline with a single command! This script au
 ```bash
 python src/run_pipeline.py
 ```
-> ⏳ **Note:** The pipeline processes over 900,000 rows of data. It usually takes between **5 to 15 minutes** to finish depending on your computer's speed. Grab a coffee!
+>  **Note:** The pipeline processes over 900,000 rows of data. It usually takes between **5 to 15 minutes** to finish depending on your computer's speed. Grab a coffee!
 
 ### Step 6: View the Outputs
 Once the pipeline says `[DONE]`, all results will be saved in your folder automatically. Navigate to the `outputs/` directory to see what was created:
-* 🖼️ **`outputs/figures/`**: Open the `.png` files to see beautifully generated charts (Forecast Fan Chart, Cost Tradeoffs, Feature Importance, etc.)
-* 🧠 **`outputs/models/`**: Contains the saved LightGBM models (`.pkl` files).
-* 📊 **`outputs/val_predictions.csv`**: A CSV file containing all 182,500 predictions compared against actual sales.
+*  **`outputs/figures/`**: Open the `.png` files to see beautifully generated charts (Forecast Fan Chart, Cost Tradeoffs, Feature Importance, etc.)
+*  **`outputs/models/`**: Contains the saved LightGBM models (`.pkl` files).
+*  **`outputs/val_predictions.csv`**: A CSV file containing all 182,500 predictions compared against actual sales.
 
 ---
 
-## 🔬 Alternative: Explore the Jupyter Notebook
+##  Alternative: Explore the Jupyter Notebook
 
 If you prefer an interactive, narrative walkthrough of the code instead of running a single script, we have a Jupyter Notebook prepared for you.
 
@@ -194,7 +194,7 @@ Results from the 2017 validation set (182,500 store×item×day rows).
 ### Interval Calibration (80% PI = q10 → q90)
 | Metric | Value | Target / Interpretation |
 |---|---|---|
-| **Coverage** | **79.4 %** | ✅ Target = 80 % — nearly perfect calibration |
+| **Coverage** | **79.4 %** |  Target = 80 % — nearly perfect calibration |
 | Mean PI width | 59.5 units | Adaptive: wider on promo days, narrower on calm days |
 | Winkler score | 87.1 | Proper scoring rule (lower = better sharpness + accuracy) |
 | Pinball loss q10 | 3.66 | |
@@ -213,11 +213,11 @@ Safety stock = q90 − q50 = **~34 units/day** on average.
 ### Overconfidence Findings
 | Context | Miss rate | vs. Nominal 20% |
 |---|---|---|
-| Black Friday | 22.5 % | ⚠️ Overconfident |
-| Christmas week | 21.0 % | ⚠️ Slightly overconfident |
-| Weekend | 20.8 % | ⚠️ Marginal |
-| Normal days | 20.5 % | ✅ Well-calibrated |
-| Summer sale | 20.3 % | ✅ Well-calibrated |
+| Black Friday | 22.5 % |  Overconfident |
+| Christmas week | 21.0 % |  Slightly overconfident |
+| Weekend | 20.8 % |  Marginal |
+| Normal days | 20.5 % |  Well-calibrated |
+| Summer sale | 20.3 % | Well-calibrated |
 
 The model is marginally overconfident during **promotional demand spikes** (Black Friday, Christmas). Production fix: add explicit promo-lift multiplier features or ensemble with a separate promotion model.
 
